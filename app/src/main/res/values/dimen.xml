@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard_spacing">16dp</dimen>
+    <dimen name="small_spacing">8dp</dimen>
+    <dimen name="large_spacing">36dp</dimen>
+    <dimen name="gallery_small_size">100dp</dimen>
+    <dimen name="upload_btnav_size">60dp</dimen>
+</resources>

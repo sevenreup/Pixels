@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    tools:context=".ui.main.MainFragment"
+    android:layout_margin="@dimen/standard_spacing">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardS"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:cardBackgroundColor="#0000ff"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="20dp"
+        app:cardUseCompatPadding="false"
+        app:layout_scrollFlags="scroll|enterAlways">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:padding="10dp">
+
+            <ImageButton
+                android:id="@+id/imageViewSearchMenu"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/test_image" />
+
+            <ImageButton
+                android:id="@+id/imagePic"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/test_image" />
+        </RelativeLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

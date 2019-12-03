@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
+    <FrameLayout android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+        android:id="@+id/navigationview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/round_rect_white"
+        android:elevation="20dp"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:bnc_mode="spread">
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_icon="@drawable/test_image"
+            app:bt_title="Home"
+            style="@style/AppTheme.navigationItems"/>
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/brands"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_icon="@drawable/test_image"
+            style="@style/AppTheme.navigationItems"
+            app:bt_title="Search"/>
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_icon="@drawable/test_image"
+            style="@style/AppTheme.navigationItems"
+            app:bt_title="Upload"/>
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_icon="@drawable/test_image"
+            style="@style/AppTheme.navigationItems"
+            app:bt_title="Profile"/>
+    </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
