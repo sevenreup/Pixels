@@ -1,4 +1,4 @@
-package com.example.pixels.models.upload;
+package com.example.pixels.epoxy.models.upload;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,7 +14,7 @@ import com.airbnb.epoxy.EpoxyModelWithHolder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.pixels.R;
-import com.example.pixels.models.BaseEpoxyHolder;
+import com.example.pixels.epoxy.models.BaseEpoxyHolder;
 
 import butterknife.BindView;
 

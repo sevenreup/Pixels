@@ -1,39 +1,35 @@
-package com.example.pixels.controller;
+package com.example.pixels.epoxy.controller;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.airbnb.epoxy.AutoModel;
 import com.airbnb.epoxy.Typed2EpoxyController;
-import com.example.pixels.Util.GalleryClasses;
-import com.example.pixels.models.GalleyImage_;
-import com.example.pixels.models.ViewAlbums_;
+import com.example.pixels.models.GalleryModel;
+import com.example.pixels.epoxy.models.GalleyImage_;
+import com.example.pixels.epoxy.models.ViewAlbums_;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryController extends Typed2EpoxyController<List<GalleryClasses.ImageItem>, Boolean> {
+public class GalleryController extends Typed2EpoxyController<List<GalleryModel.ImageItem>, Boolean> {
     @AutoModel
     ViewAlbums_ viewAlbums;
     private AppCompatActivity activity;
-    GalleryClasses.GalleryAdapterCallBacks callBacks;
+    GalleryModel.GalleryAdapterCallBacks callBacks;
     private boolean isSelectionEnabled = false;
     private ArrayList<Selected> selectedIndex = new ArrayList<>();
     private int selectionLimit = 3;
-    private GalleryClasses.GalleryActionListener listener;
 
-    public GalleryController(AppCompatActivity activity, GalleryClasses.GalleryAdapterCallBacks callBacks) {
+    public GalleryController(AppCompatActivity activity, GalleryModel.GalleryAdapterCallBacks callBacks) {
         this.activity = activity;
         this.callBacks = callBacks;
     }
 
     @Override
-    protected void buildModels(List<GalleryClasses.ImageItem> photos, Boolean isLoading) {
+    protected void buildModels(List<GalleryModel.ImageItem> photos, Boolean isLoading) {
         viewAlbums.listener((model, parentView, clickedView, position)->{
             Log.d("Feedback", "lonstuff");
           callBacks.viewMoreClicked();
@@ -57,7 +53,7 @@ public class GalleryController extends Typed2EpoxyController<List<GalleryClasses
                     .id(i).addTo(this);
         }
     }
-    public void handleSelection(int position, GalleryClasses.ImageItem item, boolean longClick, GalleyImage_ model) {
+    public void handleSelection(int position, GalleryModel.ImageItem item, boolean longClick, GalleyImage_ model) {
 
         if (longClick && !isSelectionEnabled) {
             Selected selectedItem = new Selected(position, item);
@@ -85,9 +81,9 @@ public class GalleryController extends Typed2EpoxyController<List<GalleryClasses
 
     public class Selected {
         public int position;
-        public GalleryClasses.ImageItem item;
+        public GalleryModel.ImageItem item;
 
-        public Selected(int position, GalleryClasses.ImageItem item) {
+        public Selected(int position, GalleryModel.ImageItem item) {
             this.position = position;
             this.item = item;
         }

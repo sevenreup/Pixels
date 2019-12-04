@@ -1,14 +1,8 @@
-package com.example.pixels.models.upload;
+package com.example.pixels.epoxy.models.upload;
 
-import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.style.StyleSpan;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
@@ -16,7 +10,7 @@ import com.airbnb.epoxy.EpoxyAttribute;
 import com.airbnb.epoxy.EpoxyModelClass;
 import com.airbnb.epoxy.EpoxyModelWithHolder;
 import com.example.pixels.R;
-import com.example.pixels.models.BaseEpoxyHolder;
+import com.example.pixels.epoxy.models.BaseEpoxyHolder;
 
 import butterknife.BindView;
 

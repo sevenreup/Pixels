@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.example.pixels.R;
 import com.example.pixels.Util.Const;
-import com.example.pixels.Util.UploadClasses;
-import com.example.pixels.controller.PostViewController;
+import com.example.pixels.epoxy.controller.PostViewController;
+import com.example.pixels.models.EditTextInterface;
+import com.example.pixels.models.ImageCont;
+import com.example.pixels.models.PostContent;
+import com.example.pixels.models.TextCont;
 import com.example.pixels.vewmodels.GalleryViewModel;
 
 import java.util.ArrayList;
@@ -34,8 +37,8 @@ public class UploadFragment extends Fragment implements PostViewController.PostC
     EpoxyRecyclerView recyclerView;
     private GalleryViewModel galleryViewModel;
     private PostViewController postViewController;
-    private UploadClasses.EditTextInterface listener;
-    private List<UploadClasses.PostContent> postList = new ArrayList<>();
+    private EditTextInterface listener;
+    private List<PostContent> postList = new ArrayList<>();
     private int randId = 0;
     private boolean replaceMode = false;
     private int replaceLocation;
@@ -54,7 +57,7 @@ public class UploadFragment extends Fragment implements PostViewController.PostC
         galleryViewModel.currentPage.setValue(Const.UPLOAD.POSTCONT);
         galleryViewModel.selectedImage.observe(getActivity(), s -> {
             if (replaceMode) {
-                UploadClasses.ImageCont rep = (UploadClasses.ImageCont) postList.get(replaceLocation);
+                ImageCont rep = (ImageCont) postList.get(replaceLocation);
                 rep.setContent(s);
                 postList.set(replaceLocation, rep);
                 postViewController.setData(postList);
@@ -109,9 +112,9 @@ public class UploadFragment extends Fragment implements PostViewController.PostC
     @Override
     public void addString(boolean onPos, int position) {
         if (!onPos)
-            postList.add(new UploadClasses.TextCont(++randId, Const.POST_TEXT, ""));
+            postList.add(new TextCont(++randId, Const.POST_TEXT, ""));
         else
-            postList.add(position, new UploadClasses.TextCont(++randId, Const.POST_TEXT,""));
+            postList.add(position, new TextCont(++randId, Const.POST_TEXT,""));
 
         postViewController.setData(postList);
     }
@@ -119,9 +122,9 @@ public class UploadFragment extends Fragment implements PostViewController.PostC
     @Override
     public void addImage(boolean onPos, int position, String imgPath) {
         if (!onPos)
-            postList.add(new UploadClasses.ImageCont(++randId, POST_IMAGE,imgPath));
+            postList.add(new ImageCont(++randId, POST_IMAGE,imgPath));
         else
-            postList.add(position, new UploadClasses.ImageCont(++randId, POST_IMAGE,imgPath));
+            postList.add(position, new ImageCont(++randId, POST_IMAGE,imgPath));
 
         postViewController.setData(postList);
     }
@@ -169,4 +172,5 @@ public class UploadFragment extends Fragment implements PostViewController.PostC
     public void consolidateData() {
         galleryViewModel.postInEdit.getValue().setContent(postList);
     }
+
 }

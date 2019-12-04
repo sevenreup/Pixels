@@ -1,8 +1,8 @@
-package com.example.pixels.Util;
+package com.example.pixels.models;
 
 import androidx.annotation.Nullable;
 
-public class GalleryClasses {
+public class GalleryModel {
     public interface GalleryAdapterCallBacks {
         void viewMoreClicked();
 
@@ -92,9 +92,5 @@ public class GalleryClasses {
             }
             return false;
         }
-    }
-
-    public static interface GalleryActionListener {
-        public void isSelected(boolean status);
     }
 }

@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.example.pixels.R;
 import com.example.pixels.Util.Const;
-import com.example.pixels.Util.GalleryClasses;
-import com.example.pixels.Util.UploadClasses;
-import com.example.pixels.controller.GalleryController;
+import com.example.pixels.models.GalleryModel;
+import com.example.pixels.epoxy.controller.GalleryController;
+import com.example.pixels.models.Post;
 import com.example.pixels.ui.upload.SelectPostBSFragment;
 import com.example.pixels.vewmodels.GalleryViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -28,12 +28,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UploadActivity extends AppCompatActivity implements GalleryClasses.GalleryAdapterCallBacks {
+public class UploadActivity extends AppCompatActivity implements GalleryModel.GalleryAdapterCallBacks {
     @BindView(R.id.bottom_sheet)
     View bottomSheet;
     GalleryViewModel galleryViewModel;
     private GalleyBottom galleyBottom = new GalleyBottom();
-    private List<GalleryClasses.ImageItem> images = new ArrayList<>();
+    private List<GalleryModel.ImageItem> images = new ArrayList<>();
     GalleryController galleryController;
     BottomSheetBehavior bottomSheetBehavior;
 
@@ -139,7 +139,7 @@ public class UploadActivity extends AppCompatActivity implements GalleryClasses.
             galleryViewModel.setImage(image);
         } else {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            UploadClasses.Post post = galleryViewModel.postInEdit.getValue();
+            Post post = galleryViewModel.postInEdit.getValue();
             post.setImage(image);
             galleryViewModel.postInEdit.setValue(post);
         }

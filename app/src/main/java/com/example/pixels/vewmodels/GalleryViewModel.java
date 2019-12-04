@@ -10,16 +10,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.pixels.Util.Const;
-import com.example.pixels.Util.GalleryClasses;
-import com.example.pixels.Util.UploadClasses;
+import com.example.pixels.models.GalleryModel;
+import com.example.pixels.models.Post;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class GalleryViewModel extends ViewModel {
-    public MutableLiveData<List<GalleryClasses.ImageItem>> mutableLiveData = new MutableLiveData<>();
-    public MutableLiveData<List<GalleryClasses.ImageFolder>> mutableLiveFolders = new MutableLiveData<>();
+    public MutableLiveData<List<GalleryModel.ImageItem>> mutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<List<GalleryModel.ImageFolder>> mutableLiveFolders = new MutableLiveData<>();
 
     public MutableLiveData<String> selectedImage = new MutableLiveData<>();
     public MutableLiveData<Boolean> openSelector = new MutableLiveData<>();
@@ -27,7 +27,7 @@ public class GalleryViewModel extends ViewModel {
     public MutableLiveData<Const.UPBTMSELECTION> bottom_Selected = new MutableLiveData<>();
     public MutableLiveData<Boolean> editMode = new MutableLiveData<>();
 
-    public MutableLiveData<UploadClasses.Post> postInEdit = new MutableLiveData<>();
+    public MutableLiveData<Post> postInEdit = new MutableLiveData<>();
 
     private Boolean allLoaded = false;
     private int startingRow = 0;
@@ -35,7 +35,7 @@ public class GalleryViewModel extends ViewModel {
 
     public GalleryViewModel() {
         mutableLiveData.setValue(new ArrayList<>());
-        postInEdit.setValue(new UploadClasses.Post());
+        postInEdit.setValue(new Post());
         editMode.setValue(false);
     }
 
@@ -66,8 +66,8 @@ public class GalleryViewModel extends ViewModel {
         cursor.close();
         return rows;
     }
-    private List<GalleryClasses.ImageItem> fetchGalleryImages(Context context, int rowsPerLoad) {
-        LinkedList<GalleryClasses.ImageItem> galleryImageUrls = new LinkedList<GalleryClasses.ImageItem>();
+    private List<GalleryModel.ImageItem> fetchGalleryImages(Context context, int rowsPerLoad) {
+        LinkedList<GalleryModel.ImageItem> galleryImageUrls = new LinkedList<GalleryModel.ImageItem>();
         String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
         String orderBy = MediaStore.Images.Media.DATE_TAKEN;
 
@@ -86,8 +86,8 @@ public class GalleryViewModel extends ViewModel {
                 cursor.moveToPosition(i);
                 int dataColumnIndex  = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 int dataColumnIndex1 = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                GalleryClasses.ImageItem imageItem =
-                        new GalleryClasses.ImageItem(cursor.getInt(dataColumnIndex1), cursor.getString(dataColumnIndex));
+                GalleryModel.ImageItem imageItem =
+                        new GalleryModel.ImageItem(cursor.getInt(dataColumnIndex1), cursor.getString(dataColumnIndex));
 
                 galleryImageUrls.add(imageItem);
             }
@@ -109,9 +109,9 @@ public class GalleryViewModel extends ViewModel {
         }
         return galleryImageUrls;
     }
-    private List<GalleryClasses.ImageFolder> getAllAlbums(Context context) {
+    private List<GalleryModel.ImageFolder> getAllAlbums(Context context) {
 
-        List<GalleryClasses.ImageFolder> imageFolders = new ArrayList<>();
+        List<GalleryModel.ImageFolder> imageFolders = new ArrayList<>();
         List<String> folderPathList = new ArrayList<>();
 
         Uri provider = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -125,7 +125,7 @@ public class GalleryViewModel extends ViewModel {
                 cursor.moveToFirst();
             }
             do {
-                GalleryClasses.ImageFolder folder =  new GalleryClasses.ImageFolder();
+                GalleryModel.ImageFolder folder =  new GalleryModel.ImageFolder();
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
                 String foldern = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
                 String dataPath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));

@@ -1,23 +1,23 @@
-package com.example.pixels.controller;
+package com.example.pixels.epoxy.controller;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.airbnb.epoxy.TypedEpoxyController;
 import com.example.pixels.Util.Const;
 import com.example.pixels.Util.TextEditor;
-import com.example.pixels.Util.UploadClasses;
-import com.example.pixels.models.upload.ImageModel_;
-import com.example.pixels.models.upload.TextModel_;
+import com.example.pixels.epoxy.models.upload.ImageModel_;
+import com.example.pixels.epoxy.models.upload.TextModel_;
+import com.example.pixels.models.EditTextInterface;
+import com.example.pixels.models.PostContent;
 
 import org.json.JSONException;
 
 import java.util.List;
 
-public class PostViewController extends TypedEpoxyController<List<UploadClasses.PostContent>> implements
-        UploadClasses.EditTextInterface{
+public class PostViewController extends TypedEpoxyController<List<PostContent>> implements
+        EditTextInterface {
     public TextEditor textEditor = new TextEditor();
     private PostCallbacks callbacks;
     private Context context;
@@ -29,7 +29,7 @@ public class PostViewController extends TypedEpoxyController<List<UploadClasses.
     }
 
     @Override
-    protected void buildModels(List<UploadClasses.PostContent> data) {
+    protected void buildModels(List<PostContent> data) {
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).getType() == Const.POST_IMAGE) {
                 new ImageModel_().id(data.get(i).getId()).context(context).URL(data.get(i).getContent())
@@ -76,7 +76,7 @@ public class PostViewController extends TypedEpoxyController<List<UploadClasses.
         textEditor.changeAlign(STYLE);
     }
 
-    public UploadClasses.EditTextInterface getListener() {
+    public EditTextInterface getListener() {
         return this;
     }
 

@@ -1,7 +1,6 @@
-package com.example.pixels.models;
+package com.example.pixels.epoxy.models;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;

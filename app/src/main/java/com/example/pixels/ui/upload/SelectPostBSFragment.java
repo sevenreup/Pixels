@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.bumptech.glide.Glide;
 import com.example.pixels.R;
 import com.example.pixels.Util.Const;
-import com.example.pixels.Util.UploadClasses;
+import com.example.pixels.models.Post;
 import com.example.pixels.ui.MainActivity;
 import com.example.pixels.vewmodels.GalleryViewModel;
 import com.google.android.material.card.MaterialCardView;
@@ -43,7 +43,7 @@ public class SelectPostBSFragment extends Fragment {
     private GalleryViewModel galleryViewModel;
 
     private int typeSelected = -1;
-    UploadClasses.Post postInfo = new UploadClasses.Post();
+    private Post postInfo = new Post();
 
     public SelectPostBSFragment() {
     }
@@ -101,7 +101,7 @@ public class SelectPostBSFragment extends Fragment {
     public void continueClicked() {
         if (!galleryViewModel.editMode.getValue()) {
             postInfo.setTitle(postTitle.getText().toString());
-            postInfo.setTitle(postTitle.getTag().toString());
+            postInfo.setTitle(postTags.getText().toString());
             galleryViewModel.postInEdit.setValue(postInfo);
             getFragmentManager().beginTransaction().replace(R.id.upload_container, new UploadFragment()).commit();
         } else {
