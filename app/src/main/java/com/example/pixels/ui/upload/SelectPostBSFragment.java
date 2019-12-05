@@ -3,6 +3,7 @@ package com.example.pixels.ui.upload;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.example.pixels.ui.MainActivity;
 import com.example.pixels.vewmodels.GalleryViewModel;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.ChipGroup;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,7 +110,12 @@ public class SelectPostBSFragment extends Fragment {
         } else {
             galleryViewModel.postInEdit.getValue().setTitle(postInfo.getTitle());
             galleryViewModel.postInEdit.getValue().setTags(postInfo.getTags());
-            startActivity(new Intent(getContext(), MainActivity.class));
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            Log.e("GSON",  gson.toJson(postInfo));
+            Intent intent = new Intent(getContext(), MainActivity.class);
+            intent.putExtra("upload", gson.toJson(postInfo));
+            startActivity(intent);
 
         }
     }

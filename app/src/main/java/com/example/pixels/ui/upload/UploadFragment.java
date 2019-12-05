@@ -79,8 +79,8 @@ public class UploadFragment extends Fragment implements PostViewController.PostC
                 case FINISH:
                     postViewController.textEditor.clearFocus();
                     consolidateData();
-//                    galleryViewModel.editMode.setValue(true);
-//                    getFragmentManager().beginTransaction().replace(R.id.upload_container, new SelectPostBSFragment()).commit();
+                    galleryViewModel.editMode.setValue(true);
+                    getFragmentManager().beginTransaction().replace(R.id.upload_container, new SelectPostBSFragment()).commit();
                     break;
             }
         });

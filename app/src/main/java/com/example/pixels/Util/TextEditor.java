@@ -96,6 +96,7 @@ public class TextEditor {
     }
 
     public void clearFocus() {
-        editText.clearFocus();
+        if (editText != null)
+            editText.clearFocus();
     }
 }

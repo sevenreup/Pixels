@@ -2,6 +2,8 @@ package com.example.pixels.firebase;
 
 import androidx.annotation.NonNull;
 
+import com.example.pixels.models.Post;
+import com.example.pixels.models.UploadStatus;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -16,8 +18,20 @@ public class FireStore {
     public FireStore() {
     }
 
-    public void uploadPost(Map<String, Object> post, OnSuccessListener<DocumentReference> listener, OnFailureListener failureListener) {
+    public void uploadPost(Post post, UploadStatus status) {
         db.collection("users").document(firebaseSource.currentUser().getUid())
-                .collection("posts").add(post).addOnSuccessListener(listener).addOnFailureListener(failureListener);
+                .collection("posts").add(post)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        status.dataUpload(false);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        status.onDataUploadFailed();
+                    }
+                });
     }
 }

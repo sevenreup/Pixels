@@ -12,12 +12,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.pixels.R;
+import com.example.pixels.models.Post;
 import com.example.pixels.ui.main.MainFragment;
 import com.example.pixels.ui.main.ProfileFragment;
 import com.example.pixels.ui.main.SearchFragment;
 import com.example.pixels.vewmodels.SharedViewModel;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
+import com.google.gson.Gson;
 import com.ncapdevi.fragnav.FragNavController;
 import com.ncapdevi.fragnav.FragNavController.RootFragmentListener;
 
@@ -41,11 +43,10 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
-
         if (!sharedViewModel.checkUser()) {
             startActivity(new Intent(MainActivity.this, AuthActivity.class));
         }
-        getContentResolver();
+        setUpload();
         fragNavController =  new FragNavController(getSupportFragmentManager(), R.id.fragment_container);
         fragNavController.setRootFragmentListener(this);
         Log.e("SEVEN", fragNavController.getRootFragments() + "");
@@ -79,6 +80,15 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
                 }
             }
         });
+    }
+
+    private void setUpload() {
+        String upload = getIntent().getStringExtra("upload");
+        if (upload != null) {
+            Gson gson = new Gson();
+            Post uploadPost = gson.fromJson(upload, Post.class);
+            sharedViewModel.uploadPost.setValue(uploadPost);
+        }
     }
 
     @Override

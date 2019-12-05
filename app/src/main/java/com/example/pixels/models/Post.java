@@ -1,5 +1,7 @@
 package com.example.pixels.models;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,8 @@ public class Post {
     private String title;
     private String tags;
     private String image;
+
+
 
     public Post() {
         content = new ArrayList<>();
@@ -43,5 +47,14 @@ public class Post {
 
     public void setContent(List<PostContent> content) {
         this.content = content;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "title : " + title + "\n" +
+                "tags : " + tags + "\n" +
+                "image :" + image + "\n" +
+                content.toString();
     }
 }
