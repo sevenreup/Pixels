@@ -1,5 +1,7 @@
 package com.example.pixels.models;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,4 +20,5 @@ public class PostType implements Serializable {
     public void setContent(List<PostContent> content) {
         this.content = content;
     }
+
 }

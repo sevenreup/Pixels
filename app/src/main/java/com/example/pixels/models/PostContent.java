@@ -19,7 +19,7 @@ public class PostContent {
     @NonNull
     @Override
     public String toString() {
-        return "Type: " + type + " content : { "  + content + " }";
+        return "{ Type: " + type + " content : { "  + content + " } }";
     }
 
     public int getId() {

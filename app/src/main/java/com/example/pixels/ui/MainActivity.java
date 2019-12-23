@@ -13,8 +13,10 @@ import android.widget.Toast;
 
 import com.example.pixels.R;
 import com.example.pixels.Util.PostDeserializer;
+import com.example.pixels.Util.RuntimeTypeAdapterFactory;
 import com.example.pixels.models.NavDir;
 import com.example.pixels.models.Post;
+import com.example.pixels.models.PostContent;
 import com.example.pixels.ui.frags.PostViewFragment;
 import com.example.pixels.ui.main.MainFragment;
 import com.example.pixels.ui.main.ProfileFragment;
@@ -112,16 +114,16 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
         });
     }
     private void setUpload() {
-//        String upload = getIntent().getStringExtra("upload");
-        Post upload = (Post) getIntent().getSerializableExtra("upload");
+        String upload = getIntent().getStringExtra("upload");
+
         if (upload != null) {
-            Log.e("ttt", upload.toString());
-//            GsonBuilder builder = new GsonBuilder();
-//            builder.registerTypeAdapter(Post.class, new PostDeserializer());
-//            Gson gson = builder.create();
-//            Post uploadPost = gson.fromJson(upload, Post.class);
-//            Log.e("nii", uploadPost.toString());
-//            sharedViewModel.uploadPost.setValue(uploadPost);
+            Log.e("TAG", upload);
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(Post.class, new PostDeserializer());
+            Gson gson = builder.create();
+            Post uploadPost = gson.fromJson(upload, Post.class);
+            Log.e("nii", uploadPost.toString());
+            sharedViewModel.uploadPost.setValue(uploadPost);
         }
     }
 

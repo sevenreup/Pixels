@@ -59,7 +59,7 @@ public class Post implements Parcelable {
     @Override
     public String toString() {
         return "\ntitle : " + title + "\n" +
-                "tags : " + tags + "\n { content: " +
+                "tags : " + tags + "\n  content: {" +
                 postType.toString() + "}";
     }
 

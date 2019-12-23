@@ -90,14 +90,13 @@ public class UploadActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.cont) {
 
             if (checkValidity()) {
-//                Gson gson = new GsonBuilder().create();
-//                String sfy = gson.toJson(uploadViewModel.postInEdit.getValue());
-//                Log.e("sfy", sfy);
+                Gson gson = new GsonBuilder().create();
+                String sfy = gson.toJson(uploadViewModel.postInEdit.getValue());
                 Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("upload", uploadViewModel.postInEdit.getValue());
-//                intent.putExtra("upload", sfy);
+                intent.putExtra("upload", sfy);
                 startActivity(intent);
             }
+
         }
         return true;
     }

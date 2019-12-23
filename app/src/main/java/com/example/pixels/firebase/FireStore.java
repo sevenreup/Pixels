@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.example.pixels.models.Post;
 import com.example.pixels.models.UploadStatus;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
 
@@ -33,5 +35,9 @@ public class FireStore {
                         status.onDataUploadFailed();
                     }
                 });
+    }
+
+    public void getMainPagePost(OnCompleteListener<QuerySnapshot> listener) {
+        db.collection("posts").get().addOnCompleteListener(listener);
     }
 }

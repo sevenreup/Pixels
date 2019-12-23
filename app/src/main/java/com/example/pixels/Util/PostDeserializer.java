@@ -24,7 +24,7 @@ public class PostDeserializer implements JsonDeserializer<Post> {
         Gson gson = new Gson();
 
         if (type == Const.ART) {
-            ArtType artType = gson.fromJson(object.get("postType").getAsString(),ArtType.class);
+            ArtType artType = gson.fromJson(object.get("postType").toString(),ArtType.class);
             Post post = new Post();
             post.setTitle(title);
             post.setTags(tag);
@@ -32,7 +32,7 @@ public class PostDeserializer implements JsonDeserializer<Post> {
             post.setContent(artType);
             return post;
         } else {
-            WritingType artType = serializeWrite(object.get("postType").getAsJsonObject());
+            WritingType artType =gson.fromJson(object.get("postType").toString(),WritingType.class);
             Post post = new Post();
             post.setTitle(title);
             post.setTags(tag);
