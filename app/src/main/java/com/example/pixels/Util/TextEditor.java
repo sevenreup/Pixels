@@ -94,7 +94,6 @@ public class TextEditor {
     public String getText() throws JSONException {
         return SpannableConverter.spannable2Json((SpannableStringBuilder) editText.getText());
     }
-
     public void clearFocus() {
         if (editText != null)
             editText.clearFocus();

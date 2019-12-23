@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <declare-styleable name="segmentedButton">
+        <attr name="right_text" format="string"/>
+        <attr name="left_text" format="string"/>
+        <attr name="selection_mode" format="boolean"/>
+        <attr name="select_color" format="string"/>
+        <attr name="select_left" format="boolean"/>
+    </declare-styleable>
+</resources>

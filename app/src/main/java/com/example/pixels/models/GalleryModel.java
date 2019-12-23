@@ -51,46 +51,4 @@ public class GalleryModel {
         }
     }
 
-    public static class ImageItem {
-        private String imageURI;
-        private String picturepath;
-        private int id;
-
-        public ImageItem(int id, String picturepath) {
-            this.id = id;
-            this.picturepath = picturepath;
-        }
-
-        public String getImageURI() {
-            return imageURI;
-        }
-
-        public void setImageURI(String imageURI) {
-            this.imageURI = imageURI;
-        }
-
-        public String getPicturepath() {
-            return picturepath;
-        }
-
-        public void setPicturepath(String picturepath) {
-            this.picturepath = picturepath;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        @Override
-        public boolean equals(@Nullable Object obj) {
-            if (obj instanceof ImageItem) {
-                return getPicturepath().equals(((ImageItem) obj).getPicturepath());
-            }
-            return false;
-        }
-    }
 }

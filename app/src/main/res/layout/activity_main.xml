@@ -21,7 +21,8 @@
         android:elevation="20dp"
         android:orientation="horizontal"
         android:padding="12dp"
-        app:bnc_mode="spread">
+        app:bnc_mode="spread"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior">
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/home"

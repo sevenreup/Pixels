@@ -6,9 +6,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.pixels.Util.Const;
+import com.example.pixels.models.Image;
 import com.example.pixels.models.Post;
 import com.example.pixels.models.PostContent;
 import com.example.pixels.models.UploadStatus;
+import com.example.pixels.models.WritingType;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,7 +28,7 @@ import java.util.List;
 import static com.example.pixels.Util.Const.POST_IMAGE;
 
 public class FireStorage implements OnSuccessListener<UploadTask.TaskSnapshot>, OnFailureListener {
-    private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+    private static FirebaseStorage storage = FirebaseStorage.getInstance();
     private Post uploadPost;
     private List<PostContent> postContentList;
     private int count = 0;
@@ -35,6 +38,7 @@ public class FireStorage implements OnSuccessListener<UploadTask.TaskSnapshot>, 
     private void uploadPostImage(TaskType jobType, String imagePath,
                                  OnProgressListener<UploadTask.TaskSnapshot> progressListener, OnFailureListener failureListener,
                                  OnSuccessListener<UploadTask.TaskSnapshot> successListener) {
+        StorageReference storageReference = storage.getReference();
         Uri path = Uri.fromFile(new File(imagePath));
         StorageReference filePath = null;
         switch (jobType) {
@@ -57,57 +61,67 @@ public class FireStorage implements OnSuccessListener<UploadTask.TaskSnapshot>, 
         uploadPost = post;
         userId = firebaseUser.getUid();
         status.uploadStatus(true);
-        uploadPostImage(TaskType.MAIN_IMAGE, post.getImage(), new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-
-            }
-        }, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                status.uploadImageFailed();
-            }
-        }, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                uploadPost.setImage(taskSnapshot.getMetadata().getPath());
-
-                postContentList = uploadPost.getContent();
-                total = getTotalSize();
-                for (int i = 0; i < uploadPost.getContent().size(); i++) {
-                    if (uploadPost.getContent().get(i).getType() == POST_IMAGE) {
-                        PostContent content = uploadPost.getContent().get(i);
-                        int finalI = i;
-                        uploadPostImage(TaskType.POST_IMAGE, content.getContent(),
-                                new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-
-                                    }
-                                }, new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-
-                                    }
-                                }, taskSnapshot2 -> {
-                                    Log.e("Upload", taskSnapshot2.getMetadata().getPath());
-                                    content.setContent(taskSnapshot2.getMetadata().getPath());
-                                    postContentList.set(finalI, content);
-                                    count++;
-                                    Log.e("COUNT", "total: " + total + " position : " + count);
-                                    if (count == total) {
-                                        uploadPost.setContent(postContentList);
-                                        mutablePost.setValue(uploadPost);
-                                        Log.e("Final i think", "total: " + total + " position : " + count);
-                                        status.uploadStatus(false);
-                                    }
-                                });
-                    }
+        if (uploadPost.getType() == Const.POEM) {
+            WritingType writingType = (WritingType) uploadPost.getContent();
+            uploadPostImage(TaskType.MAIN_IMAGE, writingType.getImage().getContent(), new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
 
                 }
-            }
-        });
+            }, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
 
+                }
+            }, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Image tem = writingType.getImage();
+                    tem.setContent(taskSnapshot.getMetadata().getPath());
+                    writingType.setImage(tem);
+
+                    postContentList = uploadPost.getContent().getContent();
+                    total = getTotalSize();
+                    uploadInsidePosts(status, mutablePost);
+                }
+            });
+        } else {
+            postContentList = uploadPost.getContent().getContent();
+            uploadInsidePosts(status, mutablePost);
+        }
+    }
+    private void uploadInsidePosts(UploadStatus status, MutableLiveData<Post> mutablePost) {
+        for (int i = 0; i < postContentList.size(); i++) {
+            if (postContentList.get(i).getType() == POST_IMAGE) {
+                PostContent content = postContentList.get(i);
+                int finalI = i;
+                uploadPostImage(TaskType.POST_IMAGE, content.getContent(),
+                        new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+
+                            }
+                        }, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                status.uploadImageFailed();
+                            }
+                        }, taskSnapshot2 -> {
+                            Log.e("Upload", taskSnapshot2.getMetadata().getPath());
+                            content.setContent(taskSnapshot2.getMetadata().getPath());
+                            postContentList.set(finalI, content);
+                            count++;
+                            Log.e("COUNT", "total: " + total + " position : " + count);
+                            if (count == total) {
+                                uploadPost.getContent().setContent(postContentList);
+                                mutablePost.setValue(uploadPost);
+                                Log.e("Final i think", "total: " + total + " position : " + count);
+                                status.uploadStatus(false);
+                            }
+                        });
+            }
+
+        }
     }
 
     private int getTotalSize() {
@@ -118,6 +132,14 @@ public class FireStorage implements OnSuccessListener<UploadTask.TaskSnapshot>, 
                 counter++;
         }
         return counter;
+    }
+
+    public static StorageReference getRefWithPath(String url) {
+        return storage.getReference().child(url);
+    }
+
+    public static StorageReference getRefWithUrl(String url) {
+        return storage.getReferenceFromUrl(url);
     }
 
     @Override

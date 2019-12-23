@@ -1,155 +1,131 @@
 package com.example.pixels.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.example.pixels.R;
 import com.example.pixels.Util.Const;
-import com.example.pixels.models.GalleryModel;
-import com.example.pixels.epoxy.controller.GalleryController;
+import com.example.pixels.adapter.CreatePostViewPagerAdapter;
 import com.example.pixels.models.Post;
-import com.example.pixels.ui.upload.SelectPostBSFragment;
-import com.example.pixels.vewmodels.GalleryViewModel;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.pixels.models.WritingType;
+import com.example.pixels.vewmodels.UploadViewModel;
+import com.example.pixels.view.SegmentedButton;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class UploadActivity extends AppCompatActivity implements GalleryModel.GalleryAdapterCallBacks {
-    @BindView(R.id.bottom_sheet)
-    View bottomSheet;
-    GalleryViewModel galleryViewModel;
-    private GalleyBottom galleyBottom = new GalleyBottom();
-    private List<GalleryModel.ImageItem> images = new ArrayList<>();
-    GalleryController galleryController;
-    BottomSheetBehavior bottomSheetBehavior;
+public class UploadActivity extends AppCompatActivity {
+    @BindView(R.id.post_viewpager)
+    ViewPager2 viewPager;
+    UploadViewModel uploadViewModel;
+    private CreatePostViewPagerAdapter viewPagerAdapter;
+    private BottomSheetDialog choiceDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload);
+        setContentView(R.layout.activity_main_upload);
+        uploadViewModel = ViewModelProviders.of(this).get(UploadViewModel.class);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("");
+        toolbar.setNavigationIcon(R.drawable.test_image);
+        toolbar.setNavigationOnClickListener(v -> Toast.makeText(UploadActivity.this, "close", Toast.LENGTH_SHORT).show());
         ButterKnife.bind(this);
-        ButterKnife.bind(galleyBottom, bottomSheet);
-
-        galleryController = new GalleryController(this, this);
-        galleryViewModel = ViewModelProviders.of(this).get(GalleryViewModel.class);
-        setupRecyclerView();
-        setUpBottomSheet();
-
-        galleryViewModel.mutableLiveData.observe(this, imageItems -> {
-            images.addAll(imageItems);
-            galleryController.setData(images, true);
-        });
-
-        galleryViewModel.openSelector.observe(this, aBoolean -> {
-            if (aBoolean)
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
-        });
-
-        galleryViewModel.currentPage.observe(this, upload -> {
-            switch (upload) {
-                case POSTCONT:
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    bottomSheetBehavior.setHideable(false);
-                    break;
-                case UPLOADINFO:
-                    bottomSheetBehavior.setHideable(true);
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    break;
-            }
-        });
-        getSupportFragmentManager().beginTransaction().replace(R.id.upload_container, new SelectPostBSFragment()).commit();
+        setUpDialog();
     }
 
-    private void setupRecyclerView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 5);
-        galleyBottom.recyclerView.setController(galleryController);
-        galleyBottom.recyclerView.setLayoutManager(layoutManager);
-        galleyBottom.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Log.i("SEVEN", "scolled");
-                if (layoutManager.findLastVisibleItemPosition() == galleryController.getAdapter().getItemCount( ) -1) {
-                    loadMorePictures(30);
-                }
+    private void setUpDialog() {
+        choiceDialog = new BottomSheetDialog(this);
+        choiceDialog.setOnCancelListener(dialog -> UploadActivity.this.onBackPressed());
+        View view = getLayoutInflater().inflate(R.layout.bottom_upload_choice, null);
+        SegmentedButton postType = view.findViewById(R.id.post_type);
+        postType.setOnStateListener(position -> {
+            if (position == SegmentedButton.Toggle.LEFT) {
+                setUpWriting();
+                choiceDialog.dismiss();
+            } else {
+                setUpArt();
+                choiceDialog.dismiss();
             }
         });
+        choiceDialog.setCanceledOnTouchOutside(false);
+        choiceDialog.setContentView(view);
+        choiceDialog.show();
     }
 
-    private void setUpBottomSheet() {
-        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet));
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-                if (i == BottomSheetBehavior.STATE_DRAGGING) {
-                    if (galleryViewModel.mutableLiveData.getValue().isEmpty())
-                        loadMorePictures(30);
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
-        galleyBottom.editInfo.setOnClickListener(v->{galleryViewModel.bottom_Selected.setValue(Const.UPBTMSELECTION.FINISH);});
-        galleyBottom.addImage.setOnClickListener(v->{galleryViewModel.bottom_Selected.setValue(Const.UPBTMSELECTION.IMAGE);});
-        galleyBottom.addText.setOnClickListener(v->{galleryViewModel.bottom_Selected.setValue(Const.UPBTMSELECTION.TEXT);});
+    private void setUpArt() {
+        uploadViewModel.setUpUploads(Const.ART);
+        viewPagerAdapter = new CreatePostViewPagerAdapter(this, Const.ART);
+        viewPager.setAdapter(viewPagerAdapter);
     }
 
-    private void loadMorePictures(int pageSize) {
-        galleryViewModel.getImagesFromGalley(this, pageSize);
+    private void setUpWriting() {
+        uploadViewModel.setUpUploads(Const.POEM);
+        viewPagerAdapter = new CreatePostViewPagerAdapter(this, Const.POEM);
+        viewPager.setAdapter(viewPagerAdapter);
     }
 
     @Override
-    public void viewMoreClicked() {
-        Toast.makeText(this, "View more", Toast.LENGTH_LONG).show();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.upload_first_menu, menu);
+        return true;
     }
 
     @Override
-    public void selectionLimit() {
-        Toast.makeText(this, "Selection Limit Reached", Toast.LENGTH_LONG).show();
-    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.cont) {
 
-    @Override
-    public void selectionMode(boolean active) {
-        Toast.makeText(this, "selection mode toggle " + active, Toast.LENGTH_LONG).show();
-        if (!active) {
+            if (checkValidity()) {
+//                Gson gson = new GsonBuilder().create();
+//                String sfy = gson.toJson(uploadViewModel.postInEdit.getValue());
+//                Log.e("sfy", sfy);
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("upload", uploadViewModel.postInEdit.getValue());
+//                intent.putExtra("upload", sfy);
+                startActivity(intent);
+            }
         }
+        return true;
     }
 
-    @Override
-    public void addImage(String image) {
-        if (galleryViewModel.currentPage.getValue() == Const.UPLOAD.POSTCONT) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            galleryViewModel.setImage(image);
+    private boolean checkValidity() {
+        uploadViewModel.consolidate.setValue(true);
+        Post post = uploadViewModel.postInEdit.getValue();
+        Log.e("stuu", post.toString());
+        if (post.getTitle() == null) {
+            Log.e("activity", "finished observing");
+            Toast.makeText(this, "no title", Toast.LENGTH_SHORT).show();
+            return false;
         } else {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            Post post = galleryViewModel.postInEdit.getValue();
-            post.setImage(image);
-            galleryViewModel.postInEdit.setValue(post);
+            if (post.getType() == Const.POEM) {
+                WritingType writingType = (WritingType) post.getContent();
+                if (writingType.getImage().getContent() == null) {
+                    Toast.makeText(this, "add image", Toast.LENGTH_SHORT).show();
+                    return false;
+                } else {
+                    if (writingType.getContent().isEmpty()) {
+                        Toast.makeText(this, "please add something", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                }
+            } else {
+
+            }
         }
-
-    }
-
-    static class GalleyBottom {
-        @BindView(R.id.recycler_view) EpoxyRecyclerView recyclerView;
-        @BindView(R.id.add_image)ImageView addImage;
-        @BindView(R.id.add_text) ImageView addText;
-        @BindView(R.id.edit_info) ImageView editInfo;
+        return true;
     }
 }

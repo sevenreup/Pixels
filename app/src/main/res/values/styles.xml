@@ -13,4 +13,9 @@
         <item name="bt_badgeBackgroundColor">@android:color/transparent</item>
         <item name="bt_shapeColor">@color/colorPrimary</item>
     </style>
+    <style name="AppTheme.EditText">
+        <item name="android:background">@drawable/wig_textbox_man</item>
+        <item name="android:padding">@dimen/standard_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/standard_spacing</item>
+    </style>
 </resources>

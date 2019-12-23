@@ -1,4 +1,4 @@
-package com.example.pixels.vewmodels;
+package com.example.pixels.Util;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,68 +6,26 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-
-import com.example.pixels.Util.Const;
 import com.example.pixels.models.GalleryModel;
-import com.example.pixels.models.Post;
+import com.example.pixels.models.Image;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GalleryViewModel extends ViewModel {
-    public MutableLiveData<List<GalleryModel.ImageItem>> mutableLiveData = new MutableLiveData<>();
-    public MutableLiveData<List<GalleryModel.ImageFolder>> mutableLiveFolders = new MutableLiveData<>();
-
-    public MutableLiveData<String> selectedImage = new MutableLiveData<>();
-    public MutableLiveData<Boolean> openSelector = new MutableLiveData<>();
-    public MutableLiveData<Const.UPLOAD> currentPage = new MutableLiveData<>();
-    public MutableLiveData<Const.UPBTMSELECTION> bottom_Selected = new MutableLiveData<>();
-    public MutableLiveData<Boolean> editMode = new MutableLiveData<>();
-
-    public MutableLiveData<Post> postInEdit = new MutableLiveData<>();
+public class ImagePicker {
+    private Context context;
 
     private Boolean allLoaded = false;
     private int startingRow = 0;
     private int rowsToLoad = 0;
 
-    public GalleryViewModel() {
-        mutableLiveData.setValue(new ArrayList<>());
-        postInEdit.setValue(new Post());
-        editMode.setValue(false);
+    public ImagePicker(Context context) {
+        this.context = context;
     }
 
-    // Image selection listener
-    public void setImage(String image) {
-        selectedImage.setValue(image);
-    }
-    public void openImageSelector(Boolean open) {
-        openSelector.setValue(open);
-    }
-    // Fetching images
-    public void getImagesFromGalley(Context context, int pageSize) {
-        mutableLiveData.setValue(fetchGalleryImages(context, pageSize));
-    }
-    public void getFolders(Context context) {
-        mutableLiveFolders.setValue(getAllAlbums(context));
-    }
-    public int getGalleySize (Context context) {
-        String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
-        String orderBy = MediaStore.Images.Media.DATE_TAKEN;
-
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
-                null, "$orderBy DESC"
-        );
-
-        int rows = cursor.getCount();
-        cursor.close();
-        return rows;
-    }
-    private List<GalleryModel.ImageItem> fetchGalleryImages(Context context, int rowsPerLoad) {
-        LinkedList<GalleryModel.ImageItem> galleryImageUrls = new LinkedList<GalleryModel.ImageItem>();
+    public List<Image> fetchGalleryImages(int rowsPerLoad) {
+        LinkedList<Image> galleryImageUrls = new LinkedList<Image>();
         String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
         String orderBy = MediaStore.Images.Media.DATE_TAKEN;
 
@@ -86,8 +44,8 @@ public class GalleryViewModel extends ViewModel {
                 cursor.moveToPosition(i);
                 int dataColumnIndex  = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 int dataColumnIndex1 = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                GalleryModel.ImageItem imageItem =
-                        new GalleryModel.ImageItem(cursor.getInt(dataColumnIndex1), cursor.getString(dataColumnIndex));
+                Image imageItem =
+                        new Image(cursor.getInt(dataColumnIndex1), 0, cursor.getString(dataColumnIndex));
 
                 galleryImageUrls.add(imageItem);
             }
@@ -109,7 +67,8 @@ public class GalleryViewModel extends ViewModel {
         }
         return galleryImageUrls;
     }
-    private List<GalleryModel.ImageFolder> getAllAlbums(Context context) {
+
+    public List<GalleryModel.ImageFolder> getAllAlbums() {
 
         List<GalleryModel.ImageFolder> imageFolders = new ArrayList<>();
         List<String> folderPathList = new ArrayList<>();
@@ -150,5 +109,22 @@ public class GalleryViewModel extends ViewModel {
         return imageFolders;
     }
 
-//    private void setS
+    public int getGalleySize () {
+        String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
+        String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null,
+                null, "$orderBy DESC"
+        );
+
+        int rows = cursor.getCount();
+        cursor.close();
+        return rows;
+    }
+
+    public interface ImagePickerListener {
+        void singleSelect(Image imageItem);
+        void multiSelect(List<Image> imageList);
+    }
 }

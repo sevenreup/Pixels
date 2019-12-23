@@ -10,6 +10,7 @@ import com.example.pixels.Util.TextEditor;
 import com.example.pixels.epoxy.models.upload.ImageModel_;
 import com.example.pixels.epoxy.models.upload.TextModel_;
 import com.example.pixels.models.EditTextInterface;
+import com.example.pixels.models.Image;
 import com.example.pixels.models.PostContent;
 
 import org.json.JSONException;
@@ -52,9 +53,11 @@ public class PostViewController extends TypedEpoxyController<List<PostContent>> 
                     if (hasFocus)
                     {
                         textEditor.setEditText(((EditText) v), finalI);
+                        callbacks.toggleControls(true);
                     } else {
                         try {
                             callbacks.textInputChange(textEditor.getText(), finalI);
+                            callbacks.toggleControls(false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -86,10 +89,11 @@ public class PostViewController extends TypedEpoxyController<List<PostContent>> 
 
     public interface PostCallbacks {
         void addString(boolean onPos, int position);
-        void addImage(boolean onPos, int position, String imgPath);
+        void addImage(boolean onPos, int position, Image imgPath);
         void removeComponent(int position);
         void replaceImage(int position);
         void showPopUp(View anchor, int position);
         void textInputChange(String value, int pos);
+        void toggleControls(boolean state);
     }
 }

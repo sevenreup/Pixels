@@ -12,7 +12,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.pixels.R;
+import com.example.pixels.Util.PostDeserializer;
+import com.example.pixels.models.NavDir;
 import com.example.pixels.models.Post;
+import com.example.pixels.ui.frags.PostViewFragment;
 import com.example.pixels.ui.main.MainFragment;
 import com.example.pixels.ui.main.ProfileFragment;
 import com.example.pixels.ui.main.SearchFragment;
@@ -20,16 +23,20 @@ import com.example.pixels.vewmodels.SharedViewModel;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ncapdevi.fragnav.FragNavController;
 import com.ncapdevi.fragnav.FragNavController.RootFragmentListener;
+import com.ncapdevi.fragnav.FragNavSwitchController;
+import com.ncapdevi.fragnav.FragNavTransactionOptions;
+import com.ncapdevi.fragnav.tabhistory.UniqueTabHistoryStrategy;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements RootFragmentListener {
+public class MainActivity extends AppCompatActivity implements RootFragmentListener, FragNavController.TransactionListener {
 
     @BindView(R.id.navigationview)
     BubbleNavigationLinearView navigationView;
@@ -47,9 +54,31 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
             startActivity(new Intent(MainActivity.this, AuthActivity.class));
         }
         setUpload();
+        setupNav(savedInstanceState);
+        sharedViewModel.loginInfo.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (!aBoolean) {
+                    startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                }
+            }
+        });
+    }
+
+    private void setupNav(Bundle savedInstanceState) {
         fragNavController =  new FragNavController(getSupportFragmentManager(), R.id.fragment_container);
         fragNavController.setRootFragmentListener(this);
-        Log.e("SEVEN", fragNavController.getRootFragments() + "");
+
+
+        UniqueTabHistoryStrategy history = new UniqueTabHistoryStrategy(new FragNavSwitchController() {
+            @Override
+            public void switchTab(int i, @Nullable FragNavTransactionOptions fragNavTransactionOptions) {
+                navigationView.setCurrentActiveItem(i);
+                Toast.makeText(MainActivity.this, i + " ", Toast.LENGTH_LONG).show();
+            }
+        });
+        fragNavController.setNavigationStrategy(history);
+        fragNavController.setFragmentHideStrategy(FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH);
         navigationView.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
             public void onNavigationChanged(View view, int position) {
@@ -63,31 +92,36 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
                         break;
                     case R.id.upload:
                         startActivity(new Intent(MainActivity.this, UploadActivity.class));
-                        default:
-                            Toast.makeText(MainActivity.this, "failure :" + position, Toast.LENGTH_LONG).show();
-                            break;
+                    default:
+                        Toast.makeText(MainActivity.this, "failure :" + position, Toast.LENGTH_LONG).show();
+                        break;
                 }
 
             }
         });
         fragNavController.initialize(0, savedInstanceState);
-
-        sharedViewModel.loginInfo.observe(this, new Observer<Boolean>() {
+        sharedViewModel.navigation.observe(this, new Observer<NavDir>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-                if (!aBoolean) {
-                    startActivity(new Intent(MainActivity.this, AuthActivity.class));
+            public void onChanged(NavDir navDir) {
+                switch (navDir.getDestination()) {
+                    case POST:
+                        fragNavController.pushFragment(new PostViewFragment(((Post)navDir.getData())));
+                        break;
                 }
             }
         });
     }
-
     private void setUpload() {
-        String upload = getIntent().getStringExtra("upload");
+//        String upload = getIntent().getStringExtra("upload");
+        Post upload = (Post) getIntent().getSerializableExtra("upload");
         if (upload != null) {
-            Gson gson = new Gson();
-            Post uploadPost = gson.fromJson(upload, Post.class);
-            sharedViewModel.uploadPost.setValue(uploadPost);
+            Log.e("ttt", upload.toString());
+//            GsonBuilder builder = new GsonBuilder();
+//            builder.registerTypeAdapter(Post.class, new PostDeserializer());
+//            Gson gson = builder.create();
+//            Post uploadPost = gson.fromJson(upload, Post.class);
+//            Log.e("nii", uploadPost.toString());
+//            sharedViewModel.uploadPost.setValue(uploadPost);
         }
     }
 
@@ -96,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
         return 3;
     }
 
+    @NotNull
     @Override
     public Fragment getRootFragment(int i) {
         Log.e("SEVEN", i + "");
@@ -109,5 +144,21 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
                 default:
                     throw new IllegalStateException("Not supposed to get here");
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (!fragNavController.popFragment())
+            super.onBackPressed();
+    }
+
+    @Override
+    public void onFragmentTransaction(@Nullable Fragment fragment, @NotNull FragNavController.TransactionType transactionType) {
+    }
+
+    @Override
+    public void onTabTransaction(@Nullable Fragment fragment, int i) {
+
     }
 }

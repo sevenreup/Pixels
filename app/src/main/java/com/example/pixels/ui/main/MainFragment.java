@@ -10,19 +10,27 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.example.pixels.R;
 import com.example.pixels.Util.BaseFragment;
+import com.example.pixels.Util.MarginItemDecoration;
+import com.example.pixels.epoxy.controller.MainPostController;
+import com.example.pixels.models.NavDir;
 import com.example.pixels.models.Post;
 import com.example.pixels.models.UploadStatus;
 import com.example.pixels.vewmodels.SharedViewModel;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.card.MaterialCardView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainFragment extends BaseFragment implements UploadStatus {
+public class MainFragment extends BaseFragment implements UploadStatus, MainPostController.PostListener {
 
     private SharedViewModel sharedViewModel;
     @BindView(R.id.upload_status)
@@ -31,10 +39,21 @@ public class MainFragment extends BaseFragment implements UploadStatus {
     TextView uploadPostStatus;
     @BindView(R.id.upload_cont)
     MaterialCardView uploadContainer;
+    @BindView(R.id.all_posts_recycler)
+    EpoxyRecyclerView recyclerView;
+    @BindView(R.id.all_post_shimmer)
+    ShimmerFrameLayout shimmerLayout;
+    private MainPostController controller;
 
     public MainFragment() {
     }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        shimmerLayout.stopShimmer();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,19 +61,24 @@ public class MainFragment extends BaseFragment implements UploadStatus {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, v);
         sharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
-
+        shimmerLayout.startShimmer();
         sharedViewModel.uploadPost.observe(getActivity(), post -> {
             uploadContainer.setVisibility(View.VISIBLE);
             uploadStatus.setText("Uploading");
             uploadPostStatus.setText("Waiting");
             sharedViewModel.startUpload(post, MainFragment.this);
         });
-        sharedViewModel.uploadComplete.observe(getActivity(), new Observer<Post>() {
-            @Override
-            public void onChanged(Post post) {
-                sharedViewModel.completeUpload(post, MainFragment.this);
-            }
+        controller = new MainPostController(getContext(), this);
+        recyclerView.setController(controller);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new MarginItemDecoration(getResources().getDimensionPixelSize(R.dimen.standard_spacing)));
+        sharedViewModel.mainPosts.observe(this, posts -> {
+            shimmerLayout.setVisibility(View.GONE);
+            shimmerLayout.stopShimmer();
+            controller.setData(posts);
         });
+        sharedViewModel.getAllPosts();
+        sharedViewModel.uploadComplete.observe(getActivity(), post -> sharedViewModel.completeUpload(post, MainFragment.this));
         return v;
     }
 
@@ -97,5 +121,10 @@ public class MainFragment extends BaseFragment implements UploadStatus {
     @Override
     public void onDataUploadFailed() {
         uploadPostStatus.setText("UploadFailed");
+    }
+
+    @Override
+    public void onPostClicked(Post post) {
+        sharedViewModel.navigation.setValue(new NavDir(NavDir.NavDest.POST, post));
     }
 }

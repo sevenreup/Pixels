@@ -7,6 +7,9 @@ public class PostContent {
     private String content;
     private int id;
 
+    public PostContent() {
+    }
+
     public PostContent(int id, int type, String content) {
         this.type = type;
         this.content = content;
