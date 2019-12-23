@@ -43,7 +43,7 @@ public class ImagePickerFragment extends BottomSheetDialogFragment implements Ga
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_picker, container, false);
         ButterKnife.bind(this, v);
-        galleryController = new GalleryController(getContext(), this);
+        galleryController = new GalleryController(getContext(), this, 0);
         setupRecyclerView();
             loadMorePictures(30);
         return v;

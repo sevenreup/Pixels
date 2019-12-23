@@ -24,9 +24,9 @@ public class CreatePostViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         if (page == Const.ART) {
             if (position == 0)
-                return new ArtUploadFirstFragment();
-            else
                 return new ArtUploadSecondFragment();
+            else
+                return new ArtUploadFirstFragment();
         } else {
             if (position == 0)
                 return new WritingFirstFragment();

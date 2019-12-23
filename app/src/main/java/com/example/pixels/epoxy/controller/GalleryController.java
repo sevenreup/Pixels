@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GalleryController extends Typed2EpoxyController<List<Image>, Boolean> {
+    private int type;
     @AutoModel
     ViewAlbums_ viewAlbums;
     private Context context;
@@ -24,16 +25,20 @@ public class GalleryController extends Typed2EpoxyController<List<Image>, Boolea
     private ArrayList<Selected> selectedIndex = new ArrayList<>();
     private int selectionLimit = 3;
 
-    public GalleryController(Context context, GalleryModel.GalleryAdapterCallBacks callBacks) {
+    public GalleryController(Context context, GalleryModel.GalleryAdapterCallBacks callBacks, int type) {
         this.context = context;
         this.callBacks = callBacks;
+        this.type = type;
     }
 
     @Override
     protected void buildModels(List<Image> photos, Boolean isLoading) {
+
+    }
+    private void setUpPicker(List<Image> photos) {
         viewAlbums.listener((model, parentView, clickedView, position)->{
             Log.d("Feedback", "lonstuff");
-          callBacks.viewMoreClicked();
+            callBacks.viewMoreClicked();
         }).addTo(this);
 
         for (int i = 0; i < photos.size(); i++) {
