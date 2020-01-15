@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -43,7 +44,7 @@ public class UploadActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         toolbar.setNavigationIcon(R.drawable.test_image);
-        toolbar.setNavigationOnClickListener(v -> Toast.makeText(UploadActivity.this, "close", Toast.LENGTH_SHORT).show());
+        toolbar.setNavigationOnClickListener(v -> finish());
         ButterKnife.bind(this);
         setUpDialog();
     }
@@ -61,6 +62,16 @@ public class UploadActivity extends AppCompatActivity {
                 setUpArt();
                 choiceDialog.dismiss();
             }
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    if (position == 0)
+                        getSupportActionBar().setTitle("Post information");
+                    else
+                        getSupportActionBar().setTitle("Create Post");
+                }
+            });
         });
         choiceDialog.setCanceledOnTouchOutside(false);
         choiceDialog.setContentView(view);
@@ -71,6 +82,7 @@ public class UploadActivity extends AppCompatActivity {
         uploadViewModel.setUpUploads(Const.ART);
         viewPagerAdapter = new CreatePostViewPagerAdapter(this, Const.ART);
         viewPager.setAdapter(viewPagerAdapter);
+
     }
 
     private void setUpWriting() {

@@ -8,7 +8,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.pixels.R;
 import com.example.pixels.Util.PaletteColorTransformation;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.storage.StorageReference;
 
 import butterknife.BindView;
@@ -38,6 +41,11 @@ public class PostP1 extends EpoxyModelWithHolder<PostP1.PostP1ViewHolder> {
     StorageReference postImage;
     @EpoxyAttribute
     Context context;
+    @EpoxyAttribute
+    View.OnClickListener cardClick;
+    @EpoxyAttribute String username;
+    @EpoxyAttribute String content;
+    @EpoxyAttribute String title;
 
     @Override
     public void bind(@NonNull PostP1ViewHolder holder) {
@@ -48,6 +56,9 @@ public class PostP1 extends EpoxyModelWithHolder<PostP1.PostP1ViewHolder> {
                 .transform(
                         new BlurTransformation(8))
                 .into(holder.postImage);
+        holder.cardView.setOnClickListener(cardClick);
+        holder.content.setText(content);
+        holder.title.setText(title);
     }
 
     @Override
@@ -63,5 +74,11 @@ public class PostP1 extends EpoxyModelWithHolder<PostP1.PostP1ViewHolder> {
     public class PostP1ViewHolder extends BaseEpoxyHolder {
         @BindView(R.id.post_image)
         ImageView postImage;
+        @BindView(R.id.post_card)
+        MaterialCardView cardView;
+        @BindView(R.id.post_title)
+        TextView title;
+        @BindView(R.id.post_content)
+        TextView content;
     }
 }

@@ -14,87 +14,91 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.core.widget.NestedScrollView>
+
     <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="-30dp"
+        android:padding="@dimen/small_spacing"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:padding="@dimen/small_spacing"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="8dp">
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/standard_spacing"
+            android:layout_marginBottom="@dimen/large_spacing"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/text_control_cont"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/text_control_cont"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="@dimen/small_spacing"
-                    app:cardBackgroundColor="?attr/colorButtonNormal"
-                    app:cardCornerRadius="10dp"
-                    tools:visibility="gone">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:id="@+id/imageButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:srcCompat="@drawable/add_image" />
-
-                        <ImageButton
-                            android:id="@+id/imageButton2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:srcCompat="@drawable/add_image" />
-
-                        <ImageButton
-                            android:id="@+id/imageButton3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:srcCompat="@drawable/add_image" />
-
-                        <ImageButton
-                            android:id="@+id/imageButton4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:srcCompat="@drawable/add_image" />
-
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_margin="@dimen/small_spacing"
+                app:cardBackgroundColor="?attr/colorButtonNormal"
+                app:cardCornerRadius="10dp"
+                tools:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/small_spacing">
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/image_input"
-                        android:layout_width="match_parent"
+                    <ImageButton
+                        android:id="@+id/bold_action"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/add_image" />
+                        app:srcCompat="@drawable/test_image" />
 
-                    <ImageView
-                        android:id="@+id/text_input"
-                        android:layout_width="match_parent"
+                    <ImageButton
+                        android:id="@+id/italic_action"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:srcCompat="@drawable/text_ico" />
 
+                    <ImageButton
+                        android:id="@+id/underline_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/add_image" />
+
+                    <ImageButton
+                        android:id="@+id/strike_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/add_image" />
+
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/small_spacing">
+
+                <ImageView
+                    android:id="@+id/image_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/add_image" />
+
+                <ImageView
+                    android:id="@+id/text_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/text_ico" />
 
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

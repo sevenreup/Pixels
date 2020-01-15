@@ -1,6 +1,7 @@
 package com.example.pixels.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
 
     @BindView(R.id.navigationview)
     BubbleNavigationLinearView navigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private FragNavController fragNavController;
     private SharedViewModel sharedViewModel;
@@ -51,18 +54,21 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        toolbar.setNavigationIcon(R.drawable.add_image);
+
+
         sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
         if (!sharedViewModel.checkUser()) {
             startActivity(new Intent(MainActivity.this, AuthActivity.class));
         }
         setUpload();
         setupNav(savedInstanceState);
-        sharedViewModel.loginInfo.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (!aBoolean) {
-                    startActivity(new Intent(MainActivity.this, AuthActivity.class));
-                }
+        sharedViewModel.loginInfo.observe(this, aBoolean -> {
+            if (!aBoolean) {
+                startActivity(new Intent(MainActivity.this, AuthActivity.class));
             }
         });
     }
@@ -72,44 +78,35 @@ public class MainActivity extends AppCompatActivity implements RootFragmentListe
         fragNavController.setRootFragmentListener(this);
 
 
-        UniqueTabHistoryStrategy history = new UniqueTabHistoryStrategy(new FragNavSwitchController() {
-            @Override
-            public void switchTab(int i, @Nullable FragNavTransactionOptions fragNavTransactionOptions) {
-                navigationView.setCurrentActiveItem(i);
-                Toast.makeText(MainActivity.this, i + " ", Toast.LENGTH_LONG).show();
-            }
+        UniqueTabHistoryStrategy history = new UniqueTabHistoryStrategy((i, fragNavTransactionOptions) -> {
+            navigationView.setCurrentActiveItem(i);
+            Toast.makeText(MainActivity.this, i + " ", Toast.LENGTH_LONG).show();
         });
         fragNavController.setNavigationStrategy(history);
         fragNavController.setFragmentHideStrategy(FragNavController.DETACH_ON_NAVIGATE_HIDE_ON_SWITCH);
-        navigationView.setNavigationChangeListener(new BubbleNavigationChangeListener() {
-            @Override
-            public void onNavigationChanged(View view, int position) {
-                Log.e("SEVEN", position + "");
-                switch (view.getId()) {
-                    case R.id.home: case R.id.brands:
-                        fragNavController.switchTab(position);
-                        break;
-                    case R.id.notifications:
-                        fragNavController.switchTab(position-1);
-                        break;
-                    case R.id.upload:
-                        startActivity(new Intent(MainActivity.this, UploadActivity.class));
-                    default:
-                        Toast.makeText(MainActivity.this, "failure :" + position, Toast.LENGTH_LONG).show();
-                        break;
-                }
-
+        navigationView.setNavigationChangeListener((view, position) -> {
+            Log.e("SEVEN", position + "");
+            switch (view.getId()) {
+                case R.id.home: case R.id.brands:
+                    fragNavController.switchTab(position);
+                    break;
+                case R.id.notifications:
+                    fragNavController.switchTab(position-1);
+                    break;
+                case R.id.upload:
+                    startActivity(new Intent(MainActivity.this, UploadActivity.class));
+                default:
+                    Toast.makeText(MainActivity.this, "failure :" + position, Toast.LENGTH_LONG).show();
+                    break;
             }
+
         });
         fragNavController.initialize(0, savedInstanceState);
-        sharedViewModel.navigation.observe(this, new Observer<NavDir>() {
-            @Override
-            public void onChanged(NavDir navDir) {
-                switch (navDir.getDestination()) {
-                    case POST:
-                        fragNavController.pushFragment(new PostViewFragment(((Post)navDir.getData())));
-                        break;
-                }
+        sharedViewModel.navigation.observe(this, navDir -> {
+            switch (navDir.getDestination()) {
+                case POST:
+                    fragNavController.pushFragment(new PostViewFragment(((Post)navDir.getData())));
+                    break;
             }
         });
     }

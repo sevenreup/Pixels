@@ -8,48 +8,9 @@
 
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cards"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:cardBackgroundColor="#0000ff"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="20dp"
-        app:cardUseCompatPadding="false"
-        app:layout_scrollFlags="scroll|enterAlways">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:padding="10dp">
-
-            <ImageButton
-                android:id="@+id/imageViewSearchMenu"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="5dp"
-                app:srcCompat="@drawable/test_image" />
-
-            <ImageButton
-                android:id="@+id/imagePic"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="5dp"
-                app:srcCompat="@drawable/test_image" />
-        </RelativeLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
         android:id="@+id/upload_cont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/cards"
         android:layout_marginTop="@dimen/standard_spacing"
         android:visibility="gone">
 

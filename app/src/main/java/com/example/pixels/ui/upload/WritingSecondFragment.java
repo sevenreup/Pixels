@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.example.pixels.Util.Const.POST_IMAGE;
 
@@ -46,6 +48,7 @@ public class WritingSecondFragment extends Fragment implements PostViewControlle
     EpoxyRecyclerView recyclerView;
     @BindView(R.id.text_control_cont)
     MaterialCardView controlContainer;
+
     private boolean replaceMode = false;
     private int replaceLocation;
     private ImagePickerFragment imagePicker = new ImagePickerFragment();
@@ -53,7 +56,7 @@ public class WritingSecondFragment extends Fragment implements PostViewControlle
     private PostViewController postViewController;
     private List<PostContent> postList = new ArrayList<>();
 
-    UploadViewModel uploadViewModel;
+    private UploadViewModel uploadViewModel;
 
     private int randId = 0;
 
@@ -91,12 +94,9 @@ public class WritingSecondFragment extends Fragment implements PostViewControlle
 
         uploadViewModel = ViewModelProviders.of(getActivity()).get(UploadViewModel.class);
 
-        uploadViewModel.consolidate.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                uploadViewModel.postInEdit.getValue().getContent().setContent(postList);
-                Log.e("second", "observed");
-            }
+        uploadViewModel.consolidate.observe(this, aBoolean -> {
+            uploadViewModel.postInEdit.getValue().getContent().setContent(postList);
+            Log.e("second", "observed");
         });
         return v;
     }
@@ -184,5 +184,18 @@ public class WritingSecondFragment extends Fragment implements PostViewControlle
         uploadViewModel.postInEdit.getValue()
                 .getContent()
                 .setContent(postList);
+    }
+
+    @OnClick(R.id.bold_action) public void actionBold() {
+        postViewController.textEditor.changeStyle(Const.EDITOR.BOLD);
+    }
+    @OnClick(R.id.italic_action) public void actionItalic() {
+        postViewController.textEditor.changeStyle(Const.EDITOR.ITALIC);
+    }
+    @OnClick(R.id.strike_action) public void actionStrike() {
+        postViewController.textEditor.changeStyle(Const.EDITOR.STRIKE_THROUGH);
+    }
+    @OnClick(R.id.underline_action) public void actionUnderline() {
+        postViewController.textEditor.changeStyle(Const.EDITOR.UNDERLINE);
     }
 }

@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/standard_spacing">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/select_image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"

@@ -2,10 +2,13 @@ package com.example.pixels.epoxy.controller;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
+import com.airbnb.epoxy.OnModelClickListener;
 import com.airbnb.epoxy.TypedEpoxyController;
 import com.example.pixels.Util.Const;
 import com.example.pixels.epoxy.models.PostM1_;
+import com.example.pixels.epoxy.models.PostP1;
 import com.example.pixels.epoxy.models.PostP1_;
 import com.example.pixels.firebase.FireStorage;
 import com.example.pixels.models.Post;
@@ -14,7 +17,7 @@ import com.example.pixels.models.WritingType;
 import java.util.List;
 
 public class MainPostController extends TypedEpoxyController<List<Post>> {
-    PostListener callbacks;
+    private PostListener callbacks;
     public MainPostController(Context context, PostListener callbacks) {
         this.context = context;
         this.callbacks = callbacks;
@@ -41,6 +44,9 @@ public class MainPostController extends TypedEpoxyController<List<Post>> {
                 new PostP1_().id(i)
                         .context(context)
                         .postImage(FireStorage.getRefWithPath(writingType.getImage().getContent()))
+                        .cardClick((model, parentView, clickedView, position) -> callbacks.onPostClicked(data.get(position)))
+                        .content(writingType.getDesc())
+                        .title(data.get(i).getTitle())
                         .addTo(this);
             }
 

@@ -7,16 +7,17 @@
     tools:context=".ui.UploadActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.appcompat.widget.Toolbar android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:menu="@menu/upload_first_menu"
-            android:background="@color/white"/>
+            app:menu="@menu/upload_first_menu" />
     </com.google.android.material.appbar.AppBarLayout>
     <androidx.viewpager2.widget.ViewPager2 android:id="@+id/post_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/standard_spacing"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.pixels.R;
 import com.example.pixels.Util.ImagePicker;
 import com.example.pixels.models.Image;
@@ -27,6 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WritingFirstFragment extends Fragment {
     private UploadViewModel uploadViewModel;
@@ -39,7 +41,7 @@ public class WritingFirstFragment extends Fragment {
     @BindView(R.id.description)
     EditText desc;
     @BindView(R.id.select_image)
-    ImageView selectImage;
+    CircleImageView selectImage;
     private ImagePickerFragment imagePicker = new ImagePickerFragment();
 
     public WritingFirstFragment() {
@@ -54,22 +56,19 @@ public class WritingFirstFragment extends Fragment {
         uploadViewModel = ViewModelProviders.of(getActivity()).get(UploadViewModel.class);
         writingType = (WritingType) uploadViewModel.postInEdit.getValue().getContent();
 
-        uploadViewModel.consolidate.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                String titleStr = title.getText().toString();
-                String tagsStr = tags.getText().toString();
-                String descStr = desc.getText().toString();
+        uploadViewModel.consolidate.observe(this, aBoolean -> {
+            String titleStr = title.getText().toString();
+            String tagsStr = tags.getText().toString();
+            String descStr = desc.getText().toString();
 
-                Post post = uploadViewModel.postInEdit.getValue();
-                post.setTitle(titleStr);
-                post.setTags(tagsStr);
+            Post post = uploadViewModel.postInEdit.getValue();
+            post.setTitle(titleStr);
+            post.setTags(tagsStr);
 
-                writingType.setDesc(descStr);
+            writingType.setDesc(descStr);
 
-                post.setContent(writingType);
-                uploadViewModel.postInEdit.setValue(post);
-            }
+            post.setContent(writingType);
+            uploadViewModel.postInEdit.setValue(post);
         });
         return v;
     }
@@ -79,6 +78,9 @@ public class WritingFirstFragment extends Fragment {
             @Override
             public void singleSelect(Image imageItem) {
                 writingType.setImage(imageItem);
+                Glide.with(getContext())
+                        .load(imageItem.getContent())
+                        .into(selectImage);
             }
 
             @Override

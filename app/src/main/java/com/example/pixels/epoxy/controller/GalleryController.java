@@ -33,7 +33,7 @@ public class GalleryController extends Typed2EpoxyController<List<Image>, Boolea
 
     @Override
     protected void buildModels(List<Image> photos, Boolean isLoading) {
-
+        setUpPicker(photos);
     }
     private void setUpPicker(List<Image> photos) {
         viewAlbums.listener((model, parentView, clickedView, position)->{

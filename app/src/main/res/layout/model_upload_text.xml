@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/standard_spacing"
+    android:layout_margin="@dimen/small_spacing"
     android:id="@+id/edit_container">
 
-    <EditText
-        android:id="@+id/add_text"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine" />
+        android:layout_margin="@dimen/standard_spacing"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/widget_control"
-        android:layout_width="50dp"
-        android:layout_height="20dp"
-        android:layout_below="@id/add_text"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        <EditText
+            android:id="@+id/add_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/widget_control"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/widget_control"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>
